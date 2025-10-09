@@ -11,26 +11,29 @@ B --> D["Opcion B"]
 ``` 
 ```mermaid
 ---
-title: "Diagrama de Actividad - Autenticación con React, MUI y Firebase"
+title: "Diagrama de Actividad UML - Autenticación con React, MUI y Firebase"
 ---
-flowchart TD
+stateDiagram-v2
+    [*] --> "Mostrar formulario de login (MUI)"
+    "Mostrar formulario de login (MUI)" --> "Usuario ingresa email y contraseña"
+    "Usuario ingresa email y contraseña" --> "Click en botón 'Iniciar sesión'"
 
-A["Inicio"] --> B["Usuario abre la app React"]
-B --> C["Muestra formulario de login (Material UI)"]
-C --> D["Usuario ingresa email y contraseña"]
-D --> E["Click en botón 'Iniciar sesión'"]
+    "Click en botón 'Iniciar sesión'" --> "Validar campos"
+    "Validar campos" --> "Campos inválidos?" : Decisión
 
-E --> F{"¿Campos vacíos?"}
-F -->|Sí| G["Mostrar mensaje de error (MUI Alert)"]
-F -->|No| H["Llamar a Firebase Auth con email y password"]
+    "Campos inválidos?" --> "Mostrar error (MUI Alert)" : Sí
+    "Mostrar error (MUI Alert)" --> "Esperar acción del usuario"
+    "Campos inválidos?" --> "Llamar Firebase Auth" : No
 
-H --> I{"¿Credenciales válidas?"}
-I -->|No| J["Mostrar error de autenticación (Snackbar MUI)"]
-I -->|Sí| K["Obtener objeto de usuario"]
+    "Llamar Firebase Auth" --> "Validar credenciales (Firebase)"
+    "Validar credenciales (Firebase)" --> "Credenciales válidas?" : Decisión
 
-K --> L["Guardar usuario en estado global (Context / Redux)"]
-L --> M["Redirigir a página principal / dashboard"]
+    "Credenciales válidas?" --> "Mostrar error (Snackbar MUI)" : No
+    "Mostrar error (Snackbar MUI)" --> "Esperar acción del usuario"
 
-M --> N["Renderizar componentes protegidos"]
-N --> O["Fin"]
+    "Credenciales válidas?" --> "Obtener objeto de usuario" : Sí
+    "Obtener objeto de usuario" --> "Guardar usuario en estado global (Context / Redux)"
+    "Guardar usuario en estado global (Context / Redux)" --> "Redirigir a dashboard"
+    "Redirigir a dashboard" --> "Renderizar componentes protegidos"
+    "Renderizar componentes protegidos" --> [*]
 ```
